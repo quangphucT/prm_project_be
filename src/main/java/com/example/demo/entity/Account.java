@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -11,8 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Account implements UserDetails {
+
     @Schema(defaultValue = "false")
     Boolean isDeleted = false;
     @Id
@@ -41,7 +46,7 @@ public class Account implements UserDetails {
     String email;
 
     @NotBlank(message = "Password must not be blank!")
-    @Size(message = "Password must be at least 8 characters!")
+    @Size(min = 8, message = "Password must be at least 8 characters!")
     String password;
 
     @NotBlank(message = "Phone must not be blank!")
@@ -49,13 +54,17 @@ public class Account implements UserDetails {
     @Column(unique = true)
     String phone;
 
+    @Enumerated(EnumType.STRING)
+    Role role;
 
     String avatar;
     Date createdAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        if(this.role != null) authorities.add(new SimpleGrantedAuthority(this.role.toString()));
+        return authorities;
     }
 
     @Override
@@ -82,4 +91,9 @@ public class Account implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
+    @OneToMany(mappedBy = "account")
+            @JsonIgnore
+    List<Product> products;
 }

@@ -32,7 +32,11 @@ public class Filter extends OncePerRequestFilter {
             "/v3/api-docs/**",
             "/swagger-resources/**",
             "/api/auth/login",
-            "/api/auth/register"
+            "/api/auth/register",
+            "/api/products",
+            "/api/brands",
+            "/api/categories",
+            "/api/auth/forgot-password"
     );
     public boolean checkIsPublicAPI(String uri){
         AntPathMatcher antPathMatcher = new AntPathMatcher();

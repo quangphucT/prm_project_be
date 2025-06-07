@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,6 @@ public class AccResponseAfterLogin {
     String phone;
     String avatar;
     Date createdAt;
+    Role role;
     String token;
 }

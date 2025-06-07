@@ -1,9 +1,6 @@
 package com.example.demo.api;
 
-import com.example.demo.model.AccResponseAfterLogin;
-import com.example.demo.model.AccountResponse;
-import com.example.demo.model.LoginRequest;
-import com.example.demo.model.RegisterRequest;
+import com.example.demo.model.*;
 import com.example.demo.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -28,4 +25,15 @@ public class AuthenticationAPI {
         AccResponseAfterLogin accountResponseAfterLogin = authenticationService.login(loginRequest);
         return ResponseEntity.ok(accountResponseAfterLogin);
     }
+    @PostMapping("forgot-password")
+    public ResponseEntity forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+         authenticationService.forgotPassword(forgotPasswordRequest);
+         return ResponseEntity.ok("Please check your email to reset your password!!");
+    }
+    @PostMapping("reset-password")
+    public ResponseEntity  resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest ) {
+             authenticationService.resetPassword(resetPasswordRequest);
+             return ResponseEntity.ok("Password reset successfully!");
+    }
+
 }
