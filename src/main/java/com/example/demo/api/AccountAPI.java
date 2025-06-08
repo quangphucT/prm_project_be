@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class AccountAPI {
     @Autowired
     AccountService accountService;
+
     @GetMapping("account/{id}")
         public AccountResponse getAccount(@PathVariable long id) {
         AccountResponse detailsAccResponse = accountService.getAccountById(id);

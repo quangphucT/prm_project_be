@@ -68,19 +68,11 @@ public class ProductService {
     }
     public void deleteProduct(long id){
         Product product = productRepository.findProductById(id);
-        if(product == null){
-            throw new NotFoundException("Product not found!");
-        }
-
-        if((product.getBrand() != null && !product.getBrand().getIsDeleted())
-                || (product.getCategory() != null && !product.getCategory().getIsDeleted())){
-            throw new IllegalStateException("Cannot delete product because it is associated with Brand or Category.");
-        }
         try {
             product.setIsDeleted(true);
             productRepository.save(product);
         } catch (Exception e) {
-            throw new RuntimeException("Error while deleting product!");
+            throw new NotFoundException("Product not found!");
         }
     }
     public Product getProduct(long id){

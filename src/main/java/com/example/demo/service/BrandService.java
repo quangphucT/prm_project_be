@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Brand;
+import com.example.demo.entity.Product;
 import com.example.demo.exception.DuplicationException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.CreateBrandRequest;
 import com.example.demo.repository.BrandRepository;
+import com.example.demo.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class BrandService {
     ModelMapper modelMapper;
     @Autowired
     BrandRepository brandRepository;
+
+    @Autowired
+    ProductRepository productRepository;
     public Brand createBrand(CreateBrandRequest createBrandRequest) {
         Brand brand = modelMapper.map(createBrandRequest, Brand.class);
         try {
@@ -41,12 +46,16 @@ public class BrandService {
     }
     public void deleteBrandById(long id) {
         Brand brand = brandRepository.findBrandById(id);
-        try {
-            brand.setIsDeleted(true);
-            brandRepository.save(brand);
-        } catch (Exception e) {
+        if(brand == null || brand.getIsDeleted()){
             throw new NotFoundException("Brand not found!");
         }
+        List<Product> activeProducts = productRepository.findByBrandAndIsDeletedFalse(brand);
+        if(!activeProducts.isEmpty()){
+            throw new IllegalStateException("Can not delete this brand due to having active products!");
+        }
+
+            brand.setIsDeleted(true);
+            brandRepository.save(brand);
     }
     public Brand updateBrand(long id, CreateBrandRequest createBrandRequest) {
         Brand brand = brandRepository.findBrandById(id);
@@ -55,6 +64,15 @@ public class BrandService {
             return brandRepository.save(brand);
         } catch (Exception e) {
             throw new NotFoundException("Brand not found!");
+        }
+    }
+    public void restoreBrand(long id) {
+        Brand brand = brandRepository.findBrandById(id);
+        try {
+            brand.setIsDeleted(false);
+            brandRepository.save(brand);
+        } catch (Exception e) {
+           throw new NotFoundException("Brand not found!");
         }
     }
 }

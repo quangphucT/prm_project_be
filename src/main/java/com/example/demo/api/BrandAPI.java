@@ -48,5 +48,9 @@ public class BrandAPI {
         Brand updateBrand = brandService.updateBrand(id, createBrandRequest);
         return ResponseEntity.ok(updateBrand);
     }
-
+    @PutMapping("brand/restore/{id}")
+    public ResponseEntity restoreBrandById(@PathVariable long id){
+        brandService.restoreBrand(id);
+        return ResponseEntity.ok("Restored Brand Successfully");
+    }
 }

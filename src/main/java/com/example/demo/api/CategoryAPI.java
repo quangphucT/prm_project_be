@@ -46,4 +46,9 @@ public class CategoryAPI {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok("Deleted Category successfully");
     }
+    @PutMapping("category/restore/{id}")
+    public ResponseEntity restoreCategory(@PathVariable long id){
+        categoryService.restoreCategory(id);
+        return ResponseEntity.ok("Restored Category successfully");
+    }
 }
