@@ -94,6 +94,9 @@ public class Account implements UserDetails {
 
 
     @OneToMany(mappedBy = "account")
-            @JsonIgnore
     List<Product> products;
+
+
+    @OneToMany(mappedBy = "customer")
+    List<Orders> orders;
 }

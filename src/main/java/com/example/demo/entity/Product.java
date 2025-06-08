@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -61,7 +62,11 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
+            @JsonIgnore
     Account account;
 
 
+    @OneToMany(mappedBy = "product")
+            @JsonIgnore
+    List<OrderDetails> orderDetails;
 }

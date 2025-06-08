@@ -7,6 +7,7 @@ import com.example.demo.entity.Product;
 import com.example.demo.exception.DuplicationException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.CreateProductRequest;
+import com.example.demo.repository.BrandRepository;
 import com.example.demo.repository.ProductRepository;
 
 import org.modelmapper.ModelMapper;
@@ -18,8 +19,6 @@ import java.util.List;
 
 @Service
 public class ProductService {
-    @Autowired
-    ModelMapper modelMapper;
     @Autowired
     ProductRepository productRepository;
     @Autowired
@@ -69,11 +68,19 @@ public class ProductService {
     }
     public void deleteProduct(long id){
         Product product = productRepository.findProductById(id);
+        if(product == null){
+            throw new NotFoundException("Product not found!");
+        }
+
+        if((product.getBrand() != null && !product.getBrand().getIsDeleted())
+                || (product.getCategory() != null && !product.getCategory().getIsDeleted())){
+            throw new IllegalStateException("Cannot delete product because it is associated with Brand or Category.");
+        }
         try {
             product.setIsDeleted(true);
             productRepository.save(product);
         } catch (Exception e) {
-            throw new NotFoundException("Product not found!");
+            throw new RuntimeException("Error while deleting product!");
         }
     }
     public Product getProduct(long id){
