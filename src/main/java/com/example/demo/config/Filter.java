@@ -50,7 +50,9 @@ public class Filter extends OncePerRequestFilter {
         }else{
             String token = getToken(request);
             if (token == null){
-                handlerExceptionResolver.resolveException(request,response,null, new TokenException("Empty token!!"));
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\": \"Empty token!\"}");
                 return;
             }else{
                 Account account;
