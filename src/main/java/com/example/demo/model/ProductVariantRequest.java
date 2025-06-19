@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDetailsRequest {
-    long productId;
-    long colorId;
-    long sizeId;
-    int quantity;
+public class ProductVariantRequest {
+     long colorId;
+   long sizeId;
+     int stock;
 }

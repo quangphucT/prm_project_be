@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin("*")
 @RequestMapping("/api/")
@@ -22,11 +24,16 @@ public class OrderAPI {
     @PostMapping("order")
     public ResponseEntity createOrder(@Valid @RequestBody OrderRequest orderRequest){
          Orders order = orderService.createOrder(orderRequest);
-         return ResponseEntity.ok(order);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("mesage", "Order created successfully");
+        response.put("data", order);
+         return ResponseEntity.ok(response);
     }
     @GetMapping("orders")
     public ResponseEntity getOrders(){
         List<Orders> orders = orderService.getOrders();
-        return ResponseEntity.ok(orders);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("orders", orders);
+        return ResponseEntity.ok(response);
     }
 }

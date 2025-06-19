@@ -5,7 +5,11 @@ import com.example.demo.service.AccountService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -16,13 +20,18 @@ public class AccountAPI {
     AccountService accountService;
 
     @GetMapping("account/{id}")
-        public AccountResponse getAccount(@PathVariable long id) {
+        public ResponseEntity getAccount(@PathVariable long id) {
         AccountResponse detailsAccResponse = accountService.getAccountById(id);
-        return detailsAccResponse;
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("data", detailsAccResponse);
+        return ResponseEntity.ok(response);
     }
     @PutMapping("account/{id}")
-    public AccountResponse updateAccount(@PathVariable long id, @Valid @RequestBody UpdateAccountRequest updateAccountRequest) {
+    public ResponseEntity updateAccount(@PathVariable long id, @Valid @RequestBody UpdateAccountRequest updateAccountRequest) {
         AccountResponse detailsAccResponse = accountService.updateAccount(id, updateAccountRequest);
-        return detailsAccResponse;
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Updated successfully");
+        response.put("data", detailsAccResponse);
+        return ResponseEntity.ok(response);
     }
 }

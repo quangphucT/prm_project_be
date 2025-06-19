@@ -36,7 +36,9 @@ public class Filter extends OncePerRequestFilter {
             "/api/products",
             "/api/brands",
             "/api/categories",
-            "/api/auth/forgot-password"
+            "/api/color/all",
+            "/api/auth/forgot-password",
+            "/api/size/all"
     );
     public boolean checkIsPublicAPI(String uri){
         AntPathMatcher antPathMatcher = new AntPathMatcher();

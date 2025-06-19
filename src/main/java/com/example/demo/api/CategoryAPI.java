@@ -10,7 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -22,33 +25,49 @@ public class CategoryAPI {
 
     @PostMapping("category")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Category createNewCategory(@Valid @RequestBody CreateCategoryRequest createCategoryRequest){
+    public ResponseEntity createNewCategory(@Valid @RequestBody CreateCategoryRequest createCategoryRequest){
         Category newCategory = categoryService.createCategory(createCategoryRequest);
-        return newCategory;
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Category created successfully");
+        response.put("data", newCategory);
+        return ResponseEntity.ok(response);
     }
     @GetMapping("categories")
-    public List<Category> getAllCategories(){
+    public ResponseEntity getAllCategories(){
         List<Category> categories = categoryService.getAllCategories();
-        return categories;
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", categories);
+        return ResponseEntity.ok(response);
     }
     @GetMapping("category/{id}")
-    public Category getCategoryById(@PathVariable long id){
+    public ResponseEntity getCategoryById(@PathVariable long id){
         Category category = categoryService.getCategoryById(id);
-        return category;
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("data", category);
+        return ResponseEntity.ok(response);
     }
     @PutMapping("category/{id}")
-    public Category updateCategory(@PathVariable long id, @Valid @RequestBody CreateCategoryRequest createCategoryRequest){
+    public ResponseEntity updateCategory(@PathVariable long id, @Valid @RequestBody CreateCategoryRequest createCategoryRequest){
               Category updatedCategory = categoryService.updateCategory(id, createCategoryRequest);
-              return updatedCategory;
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Update category successfully");
+        response.put("data", updatedCategory);
+
+
+              return ResponseEntity.ok(response);
     }
     @DeleteMapping("category/{id}")
     public ResponseEntity deleteCategory(@PathVariable long id){
         categoryService.deleteCategory(id);
-        return ResponseEntity.ok("Deleted Category successfully");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Deleted Category successfully");
+        return ResponseEntity.ok(response);
     }
     @PutMapping("category/restore/{id}")
     public ResponseEntity restoreCategory(@PathVariable long id){
         categoryService.restoreCategory(id);
-        return ResponseEntity.ok("Restored Category successfully");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Restored Category successfully");
+        return ResponseEntity.ok(response);
     }
 }

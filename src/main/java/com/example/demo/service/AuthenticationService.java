@@ -4,9 +4,9 @@ import com.example.demo.entity.Account;
 import com.example.demo.entity.Role;
 import com.example.demo.exception.DuplicationException;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.*;
 import com.example.demo.repository.AccountRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,8 +48,6 @@ public class AuthenticationService implements UserDetailsService {
               newAcc.setPassword(passwordEncoder.encode(newAcc.getPassword()));
               Account newAccount =  accountRepository.save(newAcc);
               AccountResponse accountResponse = modelMapper.map(newAccount, AccountResponse.class);
-              accountResponse.setMessage("Account created");
-
               EmailDetails emailDetails = new EmailDetails();
               emailDetails.setReceiver(newAccount);
               emailDetails.setSubject("Welcome to Sport's shop! We're  Excited to Have You");
@@ -76,10 +74,10 @@ public class AuthenticationService implements UserDetailsService {
 
             AccResponseAfterLogin accountResponseAfterLogin = modelMapper.map(account, AccResponseAfterLogin.class);
             accountResponseAfterLogin.setToken(tokenService.generateToken(account));
-            accountResponseAfterLogin.setMessage("Login successful!");
+
             return accountResponseAfterLogin;
         } catch (Exception e) {
-            throw new EntityNotFoundException("Invalid email or password!");
+            throw new UnauthorizedException("Invalid email or password!");
         }
     }
 
@@ -95,16 +93,17 @@ public class AuthenticationService implements UserDetailsService {
 
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         Account account = accountRepository.findAccountByEmail(forgotPasswordRequest.getEmail());
-        try {
+        if(account == null || account.getIsDeleted()){
+           throw new NotFoundException("Account not found!");
+        }else{
             String token = tokenService.generateToken(account);
             EmailDetails emailDetails = new EmailDetails();
             emailDetails.setReceiver(account);
             emailDetails.setSubject("Reset your password!!");
             emailDetails.setLink("https://www.facebook.com/quang.phuc.762048/?token=" + token);
             emailResetPasswordService.sendMailResetPassword(emailDetails);
-        } catch (Exception e) {
-            throw new NotFoundException("Account not found!");
         }
+
     }
     public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
            Account account = getCurrentAccount();

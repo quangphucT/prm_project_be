@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -23,26 +25,38 @@ public class ProductAPI {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity createNewProduct(@Valid @RequestBody CreateProductRequest createProductRequest){
         Product newProduct = productService.createNewProduct(createProductRequest);
-        return ResponseEntity.ok().body(newProduct);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Product created Successfully");
+        response.put("product", newProduct);
+        return ResponseEntity.ok(response);
     }
     @GetMapping("products")
     public ResponseEntity getAllProducts(){
         List<Product> products = productService.getAllProducts();
-        return ResponseEntity.ok().body(products);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("data", products);
+        return ResponseEntity.ok(response);
     }
     @PutMapping("/product/{id}")
     public ResponseEntity updateProduct(@Valid @RequestBody CreateProductRequest createProductRequest, @PathVariable long id){
          Product updatedproduct = productService.updateProduct(createProductRequest, id);
-         return ResponseEntity.ok().body(updatedproduct);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Product updated Successfully");
+        response.put("product", updatedproduct);
+         return ResponseEntity.ok(response);
     }
     @DeleteMapping("/product/{id}")
     public ResponseEntity deleteProduct(@PathVariable long id){
         productService.deleteProduct(id);
-        return ResponseEntity.ok("Deleted successfully");
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Product deleted Successfully");
+        return ResponseEntity.ok(response);
     }
     @GetMapping("/product/{id}")
     public ResponseEntity getProductById(@PathVariable long id){
         Product product = productService.getProduct(id);
-        return ResponseEntity.ok().body(product);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("data", product);
+        return ResponseEntity.ok().body(response);
     }
 }

@@ -10,7 +10,6 @@ import com.example.demo.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 
 import java.util.Date;
 import java.util.List;
@@ -38,10 +37,10 @@ public class BrandService {
     }
     public Brand getBrandById(long id) {
         Brand brand = brandRepository.findBrandById(id);
-        try {
-            return brand;
-        } catch (Exception e) {
+        if (brand == null) {
             throw new NotFoundException("Brand not found!");
+        }else{
+            return brand;
         }
     }
     public void deleteBrandById(long id) {
@@ -58,21 +57,25 @@ public class BrandService {
             brandRepository.save(brand);
     }
     public Brand updateBrand(long id, CreateBrandRequest createBrandRequest) {
-        Brand brand = brandRepository.findBrandById(id);
-        try {
-            brand.setName(createBrandRequest.getName());
-            return brandRepository.save(brand);
-        } catch (Exception e) {
-            throw new NotFoundException("Brand not found!");
+        Brand brand = brandRepository.findById(id)
+                .filter(b -> !b.getIsDeleted()) // ✅ chỉ lấy brand chưa bị xóa
+                .orElseThrow(() -> new NotFoundException("Brand not found"));
+
+        if (brandRepository.existsByNameAndIdNot(createBrandRequest.getName(), id)) {
+            throw new DuplicationException("Brand name already exists");
         }
+
+        brand.setName(createBrandRequest.getName());
+        return brandRepository.save(brand);
     }
+
     public void restoreBrand(long id) {
         Brand brand = brandRepository.findBrandById(id);
-        try {
+        if(brand == null || !brand.getIsDeleted()){
+            throw new NotFoundException("Brand not found!");
+        }else{
             brand.setIsDeleted(false);
             brandRepository.save(brand);
-        } catch (Exception e) {
-           throw new NotFoundException("Brand not found!");
         }
     }
 }

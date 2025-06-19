@@ -13,7 +13,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccResponseAfterLogin {
-    String message;
     long id;
     String firstName;
     String lastName;

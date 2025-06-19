@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/auth/")
@@ -18,22 +21,32 @@ public class AuthenticationAPI {
     @PostMapping("register")
     public ResponseEntity register(@Valid @RequestBody RegisterRequest registerRequest) {
         AccountResponse newAccount = authenticationService.register(registerRequest);
-        return ResponseEntity.ok(newAccount);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Register successfully");
+        response.put("data", newAccount);
+        return ResponseEntity.ok(response);
     }
     @PostMapping("login")
     public ResponseEntity login(@Valid @RequestBody LoginRequest loginRequest) {
         AccResponseAfterLogin accountResponseAfterLogin = authenticationService.login(loginRequest);
-        return ResponseEntity.ok(accountResponseAfterLogin);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Login successfully");
+        response.put("data", accountResponseAfterLogin);
+        return ResponseEntity.ok(response);
     }
     @PostMapping("forgot-password")
     public ResponseEntity forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
          authenticationService.forgotPassword(forgotPasswordRequest);
-         return ResponseEntity.ok("Please check your email to reset your password!!");
+         Map<String, Object> response = new LinkedHashMap<>();
+         response.put("message", "Please check your email to reset your password!!");
+         return ResponseEntity.ok(response);
     }
     @PostMapping("reset-password")
     public ResponseEntity  resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest ) {
              authenticationService.resetPassword(resetPasswordRequest);
-             return ResponseEntity.ok("Password reset successfully!");
+             Map<String, Object> response = new LinkedHashMap<>();
+             response.put("message", "Reset password successfully");
+             return ResponseEntity.ok(response);
     }
 
 }

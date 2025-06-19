@@ -8,5 +8,5 @@ import java.util.List;
 public interface BrandRepository extends JpaRepository<Brand, Long> {
     List<Brand> findBrandsByIsDeletedFalse();
     Brand findBrandById(Long id);
-
+    boolean existsByNameAndIdNot(String name, long id);
 }

@@ -38,22 +38,27 @@ public class CategoryService {
     }
     public Category getCategoryById(long id){
         Category category = categoryRepository.findCategoryById(id);
-        try {
+        if(category == null){
+            throw new NotFoundException("Category not found!");
+        }else{
             return category;
-        } catch (Exception e) {
-            throw new NotFoundException("Category not found!");
         }
     }
-    public Category updateCategory(long id, CreateCategoryRequest createCategoryRequest){
-        Category category = categoryRepository.findCategoryById(id);
-        try {
-            category.setName(createCategoryRequest.getName());
-            category.setDescription(createCategoryRequest.getDescription());
-            return categoryRepository.save(category);
-        } catch (Exception e) {
-            throw new NotFoundException("Category not found!");
+    public Category updateCategory(long id, CreateCategoryRequest req) {
+        Category category = categoryRepository.findById(id).filter(b -> !b.getIsDeleted())
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+
+
+        if (categoryRepository.existsByNameAndIdNot(req.getName(), id)) {
+            throw new DuplicationException("Category name already exists");
         }
+
+
+        category.setName(req.getName());
+        category.setDescription(req.getDescription());
+        return categoryRepository.save(category);
     }
+
     public void deleteCategory(long id){
 
         Category category = categoryRepository.findCategoryById(id);
@@ -71,11 +76,11 @@ public class CategoryService {
     }
     public void restoreCategory(long id){
         Category category = categoryRepository.findCategoryById(id);
-        try {
-           category.setIsDeleted(false);
-           categoryRepository.save(category);
-        } catch (Exception e) {
+        if(category == null || !category.getIsDeleted()){
             throw new NotFoundException("Category not found!");
+        }else{
+            category.setIsDeleted(false);
+            categoryRepository.save(category);
         }
     }
 }

@@ -21,7 +21,13 @@ public class OrderDetails {
     UUID id;
     float price;
     int quantity;
+    @ManyToOne
+    @JoinColumn(name = "color_id")
+    Color color;
 
+    @ManyToOne
+    @JoinColumn(name = "size_id")
+    Size size;
     @ManyToOne
     @JoinColumn(name = "orders_id")
             @JsonIgnore
@@ -31,5 +37,6 @@ public class OrderDetails {
     @JoinColumn(name = "product_id")
 
     Product product;
+
 
 }
