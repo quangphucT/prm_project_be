@@ -101,4 +101,7 @@ public class Account implements UserDetails {
     List<Orders> orders;
 
 
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    Cart cart;
+
 }

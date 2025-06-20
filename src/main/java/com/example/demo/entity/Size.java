@@ -43,4 +43,8 @@ public class Size {
             @JsonIgnore
     List<OrderDetails> orderDetails;
 
+
+    @OneToMany(mappedBy = "size")
+            @JsonIgnore
+    List<CartItem> cartItems;
 }

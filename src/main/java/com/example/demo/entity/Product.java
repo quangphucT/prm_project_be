@@ -74,4 +74,9 @@ public class Product {
 
      List<ProductVariants> productVariants;
 
+
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+            @JsonIgnore
+    List<CartItem> cartItems;
 }
