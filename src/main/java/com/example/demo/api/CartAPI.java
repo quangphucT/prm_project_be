@@ -2,6 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.entity.Cart;
 import com.example.demo.model.AddToCart;
+import com.example.demo.model.UpdateCartItem;
 import com.example.demo.service.CartService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,6 @@ public class CartAPI {
         response.put("message", "Added cart successfully");
         return ResponseEntity.ok(response);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteCart(@PathVariable long id) {
-             cartService.removeCart(id);
-             Map<String, Object> response = new LinkedHashMap<>();
-             response.put("message", "Cart successfully deleted");
-             return ResponseEntity.ok(response);
-    }
     @GetMapping
     public ResponseEntity getCart() {
            Cart cart = cartService.getCart();
@@ -42,10 +36,17 @@ public class CartAPI {
 
     }
     @PutMapping("/{id}")
-    public ResponseEntity updateCartItem(@RequestParam long id, @RequestBody AddToCart addToCart) {
-             cartService.updateItemCart(id, addToCart);
+    public ResponseEntity updateCartItem(@RequestParam long id, @RequestBody UpdateCartItem updateCartItem) {
+             cartService.updateItemCart(id, updateCartItem);
              Map<String, Object> response = new LinkedHashMap<>();
              response.put("message", "Cart successfully updated");
              return ResponseEntity.ok(response);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteCartItem(@RequestParam long cartId) {
+          cartService.deleteCartItem(cartId);
+          Map<String, Object> response = new LinkedHashMap<>();
+          response.put("message", "Items in cart deleted successfully!!");
+          return ResponseEntity.ok(response);
     }
 }

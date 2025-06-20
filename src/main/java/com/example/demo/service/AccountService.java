@@ -58,4 +58,12 @@ public class AccountService {
 
 
      }
+     public void deleteAccountById(long id){
+         Account acc = accountRepository.findAccountById(id);
+         if(acc == null){
+             throw new NotFoundException("Account not found");
+         }else{
+             accountRepository.delete(acc);
+         }
+     }
 }

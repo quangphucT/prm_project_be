@@ -34,4 +34,11 @@ public class AccountAPI {
         response.put("data", detailsAccResponse);
         return ResponseEntity.ok(response);
     }
+    @DeleteMapping("account/{id}")
+    public ResponseEntity deleteAccount(@PathVariable long id) {
+        accountService.deleteAccountById(id);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Deleted Successfully");
+        return ResponseEntity.ok(response);
+    }
 }

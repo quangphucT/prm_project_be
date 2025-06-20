@@ -3,12 +3,14 @@ package com.example.demo.service;
 import com.example.demo.entity.*;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.AddToCart;
+import com.example.demo.model.UpdateCartItem;
 import com.example.demo.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CartService {
@@ -71,42 +73,33 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
-    @Transactional
-    public void removeCart(long id) {
-        Cart cart = cartRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Cart not found"));
-
-        // Xóa liên kết cart ra khỏi account
-        Account account = cart.getAccount();
-        if (account != null) {
-            account.setCart(null); // NGẮT liên kết
-        }
-
-        cartRepository.delete(cart);
-    }
     public Cart getCart() {
         Account account = authenticationService.getCurrentAccount();
         return cartRepository.findByAccount(account)
                 .orElseThrow(() -> new NotFoundException("Cart not found"));
     }
-   public void updateItemCart(long id, AddToCart addToCart) {
+   public void updateItemCart(long id, UpdateCartItem updateCartItem) {
        CartItem cartItem = cartItemRepository.findById(id)
                .orElseThrow(() -> new NotFoundException("Cart item not found"));
 
-       Product product = productRepository.findById((int) addToCart.getProductId())
-               .orElseThrow(() -> new NotFoundException("Product not found"));
 
-       Color color = colorRepository.findById(addToCart.getColorId())
+       Color color = colorRepository.findById(updateCartItem.getColorId())
                .orElseThrow(() -> new NotFoundException("Color not found"));
 
-       Size size = sizeRepository.findById(addToCart.getSizeId())
+       Size size = sizeRepository.findById(updateCartItem.getSizeId())
                .orElseThrow(() -> new NotFoundException("Size not found"));
 
-       cartItem.setProduct(product);
        cartItem.setColor(color);
        cartItem.setSize(size);
-       cartItem.setQuantity(addToCart.getQuantity());
+       cartItem.setQuantity(updateCartItem.getQuantity());
         cartItemRepository.save(cartItem);
 
+   }
+    @Transactional
+   public void deleteCartItem(long cartId){
+       // Kiểm tra cart tồn tại
+       Cart cart = cartRepository.findById(cartId)
+               .orElseThrow(() -> new NotFoundException("Cart not found"));
+       cartItemRepository.deleteAllByCartId(cartId);
    }
 }
