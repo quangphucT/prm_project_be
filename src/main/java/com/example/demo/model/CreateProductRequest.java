@@ -19,8 +19,7 @@ public class CreateProductRequest {
     @NotBlank(message = "Name must not be blank!")
     String name;
 
-    @Min(value = 100000, message = "Price must be at least 100000!")
-    @Max(value = 1000000, message = "Price must not be larger than 1000000!")
+    @Min(value = 10000, message = "Price must be at least 10000!")
     float price;
 
 

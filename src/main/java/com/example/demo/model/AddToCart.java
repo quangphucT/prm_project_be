@@ -13,5 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddToCart {
-    List<ItemCart> cartItems;
+    long productId;
+    long colorId;
+    long sizeId;
+    int quantity;
+
 }

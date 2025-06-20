@@ -1,12 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Account;
+import com.example.demo.entity.Cart;
 import com.example.demo.entity.Role;
 import com.example.demo.exception.DuplicationException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.*;
 import com.example.demo.repository.AccountRepository;
+import com.example.demo.repository.CartRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +41,8 @@ public class AuthenticationService implements UserDetailsService {
     EmailService emailService;
     @Autowired
     EmailResetPasswordService emailResetPasswordService;
-
+    @Autowired
+    CartRepository cartRepository;
     public AccountResponse register(RegisterRequest registerRequest) {
         Account newAcc = modelMapper.map(registerRequest, Account.class);
         try {
@@ -47,6 +50,13 @@ public class AuthenticationService implements UserDetailsService {
               newAcc.setRole(Role.CUSTOMER);
               newAcc.setPassword(passwordEncoder.encode(newAcc.getPassword()));
               Account newAccount =  accountRepository.save(newAcc);
+            Account savedAcc = accountRepository.save(newAcc);
+            Cart cart = new Cart();
+            cart.setAccount(savedAcc);
+            cart.setCartItems(null);
+
+            savedAcc.setCart(cart);
+            cartRepository.save(cart);
               AccountResponse accountResponse = modelMapper.map(newAccount, AccountResponse.class);
               EmailDetails emailDetails = new EmailDetails();
               emailDetails.setReceiver(newAccount);
