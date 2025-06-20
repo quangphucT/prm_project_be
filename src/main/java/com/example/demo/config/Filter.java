@@ -34,8 +34,10 @@ public class Filter extends OncePerRequestFilter {
             "/api/auth/login",
             "/api/auth/register",
             "/api/products",
+            "/api/product/{id}",
             "/api/brands",
             "/api/categories",
+            "/api/category/id",
             "/api/color/all",
             "/api/auth/forgot-password",
             "/api/size/all"

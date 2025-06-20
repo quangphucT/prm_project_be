@@ -29,8 +29,7 @@ public class Product {
     @NotBlank(message = "Name must not be blank!")
     String name;
 
-    @Min(value = 100000, message = "Price must be at least 100000!")
-    @Max(value = 1000000, message = "Price must not be larger than 1000000!")
+    @Min(value = 10000, message = "Price must be at least 100000!")
     float price;
 
 
@@ -74,4 +73,5 @@ public class Product {
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
 
      List<ProductVariants> productVariants;
+
 }

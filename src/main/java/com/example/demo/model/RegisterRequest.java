@@ -32,8 +32,8 @@ public class RegisterRequest {
     String password;
 
     @NotBlank(message = "Phone must not be blank!")
-    @Pattern(regexp = "(84|0[3|5|7|8|9])+([0-9]{8})\\b", message = "Phone is invalid!")
+    @Pattern(regexp = "^(84|0)(3[0-9]|5[2-9]|7[0-9]|8[1-9]|9[0-9])[0-9]{7}$", message = "Phone is invalid!")
     @Column(unique = true)
-    String phone;
+    String phone = "0901234567";
     String avatar;
 }
