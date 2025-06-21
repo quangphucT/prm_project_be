@@ -10,4 +10,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Modifying
     @Query("DELETE FROM CartItem ci WHERE ci.cart.id = :cartId")
     void deleteAllByCartId(@Param("cartId") Long cartId);
+    @Modifying
+    @Query("DELETE FROM CartItem c WHERE c.id = :id")
+    void deleteByIdCustom(@Param("id") long id);
 }

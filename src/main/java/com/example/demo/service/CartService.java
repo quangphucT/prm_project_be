@@ -2,11 +2,13 @@ package com.example.demo.service;
 
 import com.example.demo.entity.*;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.AddToCart;
 import com.example.demo.model.UpdateCartItem;
 import com.example.demo.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -102,4 +104,22 @@ public class CartService {
                .orElseThrow(() -> new NotFoundException("Cart not found"));
        cartItemRepository.deleteAllByCartId(cartId);
    }
+    @Transactional
+    public void deleteEachCartItem(long id){
+
+        CartItem cartItem = cartItemRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("CartItem not found"));
+
+        // Lấy người dùng hiện tại
+        Account currentAccount = authenticationService.getCurrentAccount(); // hoặc SecurityContextHolder...
+
+        // So sánh chủ sở hữu
+        if (!Long.valueOf(cartItem.getCart().getAccount().getId())
+                .equals(Long.valueOf(currentAccount.getId()))) {
+            throw new UnauthorizedException("Unauthorized to delete!!");
+        }
+
+        cartItemRepository.deleteByIdCustom(id);
+    }
+
 }

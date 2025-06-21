@@ -49,4 +49,11 @@ public class CartAPI {
           response.put("message", "Items in cart deleted successfully!!");
           return ResponseEntity.ok(response);
     }
+    @DeleteMapping("/cartItem/{id}")
+    public ResponseEntity deleteEachCartItem(@PathVariable long id) {
+          cartService.deleteEachCartItem(id);
+          Map<String, Object> response = new LinkedHashMap<>();
+          response.put("message", "Items in cart deleted successfully!!");
+          return ResponseEntity.ok(response);
+    }
 }
