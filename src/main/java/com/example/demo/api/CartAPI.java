@@ -36,14 +36,14 @@ public class CartAPI {
 
     }
     @PutMapping("/{id}")
-    public ResponseEntity updateCartItem(@RequestParam long id, @RequestBody UpdateCartItem updateCartItem) {
+    public ResponseEntity updateCartItem(@PathVariable long id, @RequestBody UpdateCartItem updateCartItem) {
              cartService.updateItemCart(id, updateCartItem);
              Map<String, Object> response = new LinkedHashMap<>();
              response.put("message", "Cart successfully updated");
              return ResponseEntity.ok(response);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteCartItem(@RequestParam long cartId) {
+    public ResponseEntity deleteCartItem(@PathVariable long cartId) {
           cartService.deleteCartItem(cartId);
           Map<String, Object> response = new LinkedHashMap<>();
           response.put("message", "Items in cart deleted successfully!!");
