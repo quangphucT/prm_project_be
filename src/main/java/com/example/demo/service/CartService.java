@@ -98,11 +98,11 @@ public class CartService {
 
    }
     @Transactional
-   public void deleteCartItem(long cartId){
+   public void deleteCartItem(long id){
        // Kiểm tra cart tồn tại
-       Cart cart = cartRepository.findById(cartId)
+       Cart cart = cartRepository.findById(id)
                .orElseThrow(() -> new NotFoundException("Cart not found"));
-       cartItemRepository.deleteAllByCartId(cartId);
+       cartItemRepository.deleteAllByCartId(id);
    }
     @Transactional
     public void deleteEachCartItem(long id){
@@ -115,7 +115,7 @@ public class CartService {
 
         // So sánh chủ sở hữu
         if (!Long.valueOf(cartItem.getCart().getAccount().getId())
-                .equals(Long.valueOf(currentAccount.getId()))) {
+                .equals((currentAccount.getId()))) {
             throw new UnauthorizedException("Unauthorized to delete!!");
         }
 
