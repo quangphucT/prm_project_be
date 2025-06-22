@@ -83,8 +83,13 @@ public class CartService {
    public void updateItemCart(long id, UpdateCartItem updateCartItem) {
        CartItem cartItem = cartItemRepository.findById(id)
                .orElseThrow(() -> new NotFoundException("Cart item not found"));
-
-
+       // Lấy người dùng hiện tại
+       Account currentAccount = authenticationService.getCurrentAccount(); // hoặc SecurityContextHolder...
+       // So sánh chủ sở hữu
+       if (!Long.valueOf(cartItem.getCart().getAccount().getId())
+               .equals((currentAccount.getId()))) {
+           throw new UnauthorizedException("Unauthorized to delete!!");
+       }
        Color color = colorRepository.findById(updateCartItem.getColorId())
                .orElseThrow(() -> new NotFoundException("Color not found"));
 
@@ -99,9 +104,17 @@ public class CartService {
    }
     @Transactional
    public void deleteCartItem(long id){
-       // Kiểm tra cart tồn tại
-       Cart cart = cartRepository.findById(id)
-               .orElseThrow(() -> new NotFoundException("Cart not found"));
+        // Kiểm tra cart tồn tại
+        Cart cart = cartRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Cart not found"));
+        // Lấy người dùng hiện tại
+        Account currentAccount = authenticationService.getCurrentAccount(); // hoặc SecurityContextHolder...
+        // So sánh chủ sở hữu
+        if (!Long.valueOf(cart.getAccount().getId())
+                .equals((currentAccount.getId()))) {
+            throw new UnauthorizedException("Unauthorized to delete!!");
+        }
+
        cartItemRepository.deleteAllByCartId(id);
    }
     @Transactional
